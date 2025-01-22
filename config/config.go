@@ -3,8 +3,10 @@ package config
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 // ConnectDB establece una conexión a una base de datos MySQL.
@@ -19,14 +21,23 @@ func ConnectDB(dsn string) (*sql.DB, error) {
 	return db, nil
 }
 
-// InitDatabases inicializa todas las conexiones a las bases de datos requeridas.
 func InitDatabases() (map[string]*sql.DB, error) {
-	// DSNs para cada base de datos
+
+	if err := godotenv.Load(); err != nil {
+		return nil, fmt.Errorf("error loading .env file: %w", err)
+	}
+
 	databases := map[string]string{
-		"users":        "root:Mtoi2002.@tcp(localhost:3306)/UsersDB",
-		"cars":         "root:Mtoi2002.@tcp(localhost:3306)/CarDB",
-		"parkinglots":  "root:Mtoi2002.@tcp(localhost:3306)/ParkingLotDB",
-		"reservations": "root:Mtoi2002.@tcp(localhost:3306)/ReservationDB",
+		"users":        os.Getenv("DB_USERS_DSN"),
+		"cars":         os.Getenv("DB_CARS_DSN"),
+		"parkinglots":  os.Getenv("DB_PARKINGLOTS_DSN"),
+		"reservations": os.Getenv("DB_RESERVATIONS_DSN"),
+	}
+
+	for name, dsn := range databases {
+		if dsn == "" {
+			return nil, fmt.Errorf("missing DSN for %s", name)
+		}
 	}
 
 	// Inicializamos las conexiones
