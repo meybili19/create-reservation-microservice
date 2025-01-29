@@ -39,5 +39,9 @@ func CreateReservationService(databases map[string]*sql.DB, reservation map[stri
 		return err
 	}
 
+	if _, exists := reservation["status"]; !exists {
+		reservation["status"] = "Pending"
+	}
+
 	return repositories.CreateReservation(databases["reservations"], reservation)
 }
