@@ -9,7 +9,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// ConnectDB establece una conexión a una base de datos MySQL.
 func ConnectDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -40,7 +39,6 @@ func InitDatabases() (map[string]*sql.DB, error) {
 		}
 	}
 
-	// Inicializamos las conexiones
 	connections := make(map[string]*sql.DB)
 	for name, dsn := range databases {
 		db, err := ConnectDB(dsn)
