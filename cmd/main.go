@@ -21,6 +21,6 @@ func main() {
 	log.Println("All databases connected successfully!")
 
 	http.HandleFunc("/reservations", routes.CreateReservationHandler(databases))
-	log.Println("Server running on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Server running on port 4000")
+	log.Fatal(http.ListenAndServe(":4000", nil))
 }
