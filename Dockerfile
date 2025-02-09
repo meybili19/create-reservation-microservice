@@ -1,15 +1,19 @@
-FROM golang:1.19-alpine
+FROM golang:1.23
+
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
-
-RUN go mod tidy
 
 COPY . .
 
-RUN go build -o create-reservation-microservice main.go
 
-EXPOSE 8080
+RUN go mod tidy
 
-CMD ["./create-reservation-microservice"]
+
+RUN go build -o main ./cmd/main.go
+
+
+EXPOSE 4000
+
+
+CMD ["./main"]

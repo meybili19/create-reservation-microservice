@@ -9,7 +9,6 @@ import (
 	"os"
 )
 
-// Verifica que el parqueadero existe y tiene espacio disponible
 func CheckParkingLotAvailability(parkingLotID int) error {
 	parkingLotURL := fmt.Sprintf("%s/%d", os.Getenv("PARKINGLOT_SERVICE_URL"), parkingLotID)
 	resp, err := http.Get(parkingLotURL)
@@ -18,7 +17,6 @@ func CheckParkingLotAvailability(parkingLotID int) error {
 	}
 	defer resp.Body.Close()
 
-	// Consultar la capacidad del parqueadero
 	capacityURL := fmt.Sprintf("%s/%d", os.Getenv("PARKINGLOT_SERVICE_CAPACITY_URL"), parkingLotID)
 	resp, err = http.Get(capacityURL)
 	if err != nil || resp.StatusCode != http.StatusOK {
@@ -30,7 +28,6 @@ func CheckParkingLotAvailability(parkingLotID int) error {
 	body, _ := ioutil.ReadAll(resp.Body)
 	json.Unmarshal(body, &capacityData)
 
-	// Validar que haya espacio disponible
 	if capacity, ok := capacityData["capacity"].(float64); ok && int(capacity) == 0 {
 		return errors.New("parking lot has no available capacity")
 	}
