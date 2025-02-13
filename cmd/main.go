@@ -21,19 +21,16 @@ func main() {
 	}()
 	log.Println("All databases connected successfully!")
 
-	// Crear un mux (router) para manejar rutas
 	mux := http.NewServeMux()
 	mux.HandleFunc("/reservations", routes.CreateReservationHandler(databases))
 
-	// 🟢 Habilitar CORS
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"}, // Permitir solicitudes solo desde frontend
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
 	})
 
-	// Envolver el mux con el middleware de CORS
 	handler := corsHandler.Handler(mux)
 
 	log.Println("Server running on port 4000")
