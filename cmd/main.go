@@ -6,6 +6,7 @@ import (
 
 	"github.com/meybili19/create-reservation-microservice/config"
 	"github.com/meybili19/create-reservation-microservice/routes"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -20,7 +21,21 @@ func main() {
 	}()
 	log.Println("All databases connected successfully!")
 
-	http.HandleFunc("/reservations", routes.CreateReservationHandler(databases))
+	// Crear un mux (router) para manejar rutas
+	mux := http.NewServeMux()
+	mux.HandleFunc("/reservations", routes.CreateReservationHandler(databases))
+
+	// 🟢 Habilitar CORS
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"}, // Permitir solicitudes solo desde frontend
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	})
+
+	// Envolver el mux con el middleware de CORS
+	handler := corsHandler.Handler(mux)
+
 	log.Println("Server running on port 4000")
-	log.Fatal(http.ListenAndServe(":4000", nil))
+	log.Fatal(http.ListenAndServe(":4000", handler))
 }
